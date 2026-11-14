@@ -35,7 +35,12 @@ juce_add_binary_data(IridescentAssets
         Assets/Fonts/Orbitron.ttf
         Assets/Fonts/RubikGlitch.ttf
         Assets/Fonts/CormorantGaramond.ttf
-        Assets/Fonts/PressStart2P.ttf)
+        Assets/Fonts/PressStart2P.ttf
+        Assets/Presets/pad_easystrings.iflower
+        Assets/Presets/pluck_easygrains.iflower
+        Assets/Presets/bass_alittlebitwide.iflower
+        Assets/Presets/key_spacebits.iflower
+        Assets/Presets/drum_stereo.iflower)
 
 juce_add_plugin(IridescentFlower
     COMPANY_NAME "LeGui Studio"
