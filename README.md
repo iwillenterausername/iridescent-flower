@@ -201,7 +201,7 @@ TIME / FEEDBACK / MIX / TONE / DRIVE / AGE / MOD DEPTH / WIDTH
 
 ## 安装
 
-### 从 GitHub Releases 安装
+### 使用 GitHub Releases 安装包
 
 预编译包发布在：
 
@@ -209,50 +209,83 @@ TIME / FEEDBACK / MIX / TONE / DRIVE / AGE / MOD DEPTH / WIDTH
 https://github.com/iwillenterausername/iridescent-flower/releases/latest
 ```
 
-文件：
+下载：
 
 ```
 Iridescent-Flower-1.1.0-VST3-win64.zip
 ```
 
-> GitHub Releases 继承仓库可见性。仓库为 Private 时，只有仓库协作者可以下载；公开发布前需要将仓库设为 Public，或把下载者加入协作者。
-
-### 从本地安装包安装
+压缩包结构：
 
 ```
-dist\Iridescent-Flower-1.1.0-VST3-win64.zip
+Iridescent Flower.vst3/          插件本体（文件夹）
+Custom Modules/BbdDelay.dll     示例自定义模块
+Custom Modules/README.md        自定义模块说明
+Install-IridescentFlower.ps1    安装脚本
+INSTALL.txt                     安装说明
 ```
 
-压缩包包含：
+> `.vst3` 是文件夹，不是单个文件。必须完整复制整个 `Iridescent Flower.vst3` 文件夹，不能只复制其中的二进制文件。
+>
+> GitHub Releases 继承仓库可见性。仓库为 Private 时，只有仓库协作者可以下载；公开发布前需将仓库设为 Public，或将下载者加入协作者。
 
-- `Iridescent Flower.vst3`
-- `Custom Modules/BbdDelay.dll`
-- Custom Module ABI 说明
+#### 自动安装
 
-安装脚本：
+1. 将 ZIP 完整解压到任意目录。
+2. 以管理员身份打开 PowerShell，进入解压目录。
+3. 执行：
 
 ```powershell
-.\install.ps1
+powershell -ExecutionPolicy Bypass -File .\Install-IridescentFlower.ps1
 ```
 
-默认安装至 Windows 系统级 VST3 目录：
+默认安装至：
 
 ```
 C:\Program Files\Common Files\VST3\Iridescent Flower.vst3
 ```
 
-写入该目录需要管理员权限，请在管理员 PowerShell 中执行安装脚本。
-
-如宿主使用独立 VST3 目录，可指定目标路径：
-
-```powershell
-.\install.ps1 -Destination "D:\VST\Iridescent Flower.vst3"
-```
-
-并复制示例自定义模块至：
+并将示例自定义模块复制到：
 
 ```
 Documents\Iridescent Flower\Custom Modules\
+```
+
+写入 `Program Files` 需要管理员权限。
+
+安装到自定义 VST3 目录：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\Install-IridescentFlower.ps1 -VST3Folder "D:\VST"
+```
+
+#### 手动安装
+
+1. 将整个 `Iridescent Flower.vst3` 文件夹复制到：
+   ```
+   C:\Program Files\Common Files\VST3
+   ```
+   或宿主使用的自定义 VST3 目录。
+2. 将 `Custom Modules` 中的 `BbdDelay.dll` 复制到：
+   ```
+   Documents\Iridescent Flower\Custom Modules
+   ```
+3. 在宿主中重新扫描插件目录。
+
+压缩包内的 `INSTALL.txt` 包含同样的手动安装与卸载说明。
+
+### 从源码构建后安装
+
+源码目录中的 `install.ps1` 用于构建产物安装，默认同样写入系统 VST3 目录：
+
+```powershell
+.\install.ps1
+```
+
+自定义目标路径：
+
+```powershell
+.\install.ps1 -Destination "D:\VST\Iridescent Flower.vst3"
 ```
 
 ### 在宿主中加载
