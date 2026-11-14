@@ -11,6 +11,9 @@ CMakeUserPresets.json
 # Local promo work-in-progress (not part of the plugin repository)
 docs/promo/
 
+# Signing keys and passwords must never be committed
+packaging/signing/
+
 # Local installs / generated audio
 *.log
 *.tmp
