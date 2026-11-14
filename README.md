@@ -63,6 +63,22 @@ Bus 3 chain ── BUS 3 OUT ─┘           │
 - 预设保存全部 32 个槽位的参数。
 - 宿主自动化作用于当前选中的槽位；切换槽位后自动化目标同步切换。
 
+### 工厂预设
+
+插件内置五个工厂预设，随二进制编译，不依赖外部文件：
+
+| 预设 | 用途 |
+| --- | --- |
+| `PAD_EasyStrings` | 默认启动预设，宽缓弦乐/Pad 方向 |
+| `PLUCK_EasyGrains` | 粒子化拨弦 |
+| `BASS_ALittleBitWide` | 立体声贝斯 |
+| `KEY_SpaceBits` | 太空感键盘 |
+| `DRUM_Stereo` | 立体声鼓组处理 |
+
+新建插件实例时默认加载 `PAD_EasyStrings`。宿主恢复工程状态时会覆盖启动预设。
+
+打开顶部 `PRESET` 菜单 → `FACTORY PRESETS` 可切换内置预设；`SAVE PRESET` / `LOAD PRESET` 仍用于保存和读取用户 `.iflower` 文件。
+
 ### Morph 与 LFO
 
 Morph 页面集成 Bus 1 / Bus 2 交叉控制与 LFO 调制，不设置独立 LFO 槽。
