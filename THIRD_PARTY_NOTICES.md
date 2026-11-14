@@ -35,6 +35,9 @@ under the same AGPL-3.0 terms as this repository.
 public-domain artwork supplied for this project. They may be redistributed with
 the project.
 
+`Assets/source/iridescent_sketch.jpg`, `docs/art/iridescent-flower-inverted.jpg`
+and the derived setup icon are supplied by LeGui Studio for this project.
+
 No commercial album artwork is bundled.
 
 ## Custom module ABI
