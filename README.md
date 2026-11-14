@@ -222,11 +222,11 @@ IridescentFlower-1.1.0-Setup.exe
 3. 确认 VST3 安装目录（默认 `C:\Program Files\Common Files\VST3`）。
 4. 勾选是否安装示例 BBD Delay 自定义模块。
 5. 点击 `Install`。
-6. 在宿主中重新扫描 VST3 插件，然后加载 `Guillaume Audio → Iridescent Flower`。
+6. 在宿主中重新扫描 VST3 插件，然后加载 `LeGui Studio → Iridescent Flower`。
 
 安装程序包含图形界面、目标目录选择、可选自定义模块和 Windows“应用和功能”卸载入口，不需要使用命令行。
 
-> 安装程序未进行代码签名，Windows SmartScreen 可能显示未知发布者提示；选择“更多信息 → 仍要运行”即可。
+> 安装程序、VST3 与 BbdDelay.dll 使用 **LeGui Studio** 自签名代码签名证书。Windows 默认仍可能显示未知发布者；如需本地信任，可安装 Release 中的 `LeGuiStudio-CodeSigning.cer`。面向公众分发建议使用公共 CA 颁发的代码签名证书。
 >
 > GitHub Releases 继承仓库可见性。仓库为 Private 时，只有仓库协作者可以下载；公开发布前需将仓库设为 Public，或将下载者加入协作者。
 
@@ -313,7 +313,7 @@ powershell -ExecutionPolicy Bypass -File .\Install-IridescentFlower.ps1 -VST3Fol
 
 1. 将系统 VST3 目录加入宿主的插件扫描路径，或使用宿主默认 VST3 路径。
 2. 执行插件重新扫描（Rescan / Refresh）。
-3. 在 `Guillaume Audio → Iridescent Flower` 中加载。
+3. 在 `LeGui Studio → Iridescent Flower` 中加载。
 
 适用于所有支持 VST3 的 Windows DAW 与宿主。
 
@@ -395,7 +395,7 @@ docs/                 截图与测试报告
 - 自定义 DLL 在插件实例构造时扫描；替换 DLL 后需重新打开插件。
 - 宿主自动化目标为当前选中的槽位。
 - Master 不提供独立输出电平，最终电平由 `OUTPUT` 控制。
-- 二进制未进行代码签名。
+- 二进制使用 LeGui Studio 自签名证书；Windows 默认不信任该根证书，公开分发建议改用公共 CA 证书。
 
 ## License
 
