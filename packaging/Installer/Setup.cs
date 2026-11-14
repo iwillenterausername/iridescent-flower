@@ -256,7 +256,7 @@ namespace IridescentFlowerSetup
                     "Iridescent Flower 1.1.0 has been installed.\r\n\r\n" +
                     "VST3: " + target + "\r\n\r\n" +
                     "Re-scan VST3 plugins in your host, then load:\r\n" +
-                    "Guillaume Audio -> Iridescent Flower",
+                    "LeGui Studio -> Iridescent Flower",
                     "Installation complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
@@ -297,7 +297,7 @@ namespace IridescentFlowerSetup
                 {
                     key.SetValue("DisplayName", "Iridescent Flower 1.1.0");
                     key.SetValue("DisplayVersion", "1.1.0");
-                    key.SetValue("Publisher", "Guillaume Audio");
+                    key.SetValue("Publisher", "LeGui Studio");
                     key.SetValue("InstallLocation", vst3Target);
                     key.SetValue("DisplayIcon", uninstaller);
                     key.SetValue("UninstallString", "\"" + uninstaller + "\" /uninstall");
