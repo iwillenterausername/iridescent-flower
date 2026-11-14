@@ -201,7 +201,23 @@ TIME / FEEDBACK / MIX / TONE / DRIVE / AGE / MOD DEPTH / WIDTH
 
 ## 安装
 
-### 从安装包安装
+### 从 GitHub Releases 安装
+
+预编译包发布在：
+
+```
+https://github.com/iwillenterausername/iridescent-flower/releases/latest
+```
+
+文件：
+
+```
+Iridescent-Flower-1.1.0-VST3-win64.zip
+```
+
+> GitHub Releases 继承仓库可见性。仓库为 Private 时，只有仓库协作者可以下载；公开发布前需要将仓库设为 Public，或把下载者加入协作者。
+
+### 从本地安装包安装
 
 ```
 dist\Iridescent-Flower-1.1.0-VST3-win64.zip
