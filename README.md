@@ -227,8 +227,6 @@ IridescentFlower-1.1.0-Setup.exe
 安装程序包含图形界面、目标目录选择、可选自定义模块和 Windows“应用和功能”卸载入口，不需要使用命令行。
 
 > 安装程序、VST3 与 BbdDelay.dll 使用 **LeGui Studio** 自签名代码签名证书。Windows 默认仍可能显示未知发布者；如需本地信任，可安装 Release 中的 `LeGuiStudio-CodeSigning.cer`。面向公众分发建议使用公共 CA 颁发的代码签名证书。
->
-> GitHub Releases 继承仓库可见性。仓库为 Private 时，只有仓库协作者可以下载；公开发布前需将仓库设为 Public，或将下载者加入协作者。
 
 ### 便携 ZIP / 高级安装
 
