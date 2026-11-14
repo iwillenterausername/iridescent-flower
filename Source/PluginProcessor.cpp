@@ -1,12 +1,31 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "CustomModuleRegistry.h"
+#include "BinaryData.h"
 
 #include <cmath>
 
 namespace
 {
 using namespace iridescent;
+
+struct FactoryPreset
+{
+    const char* name;
+    const char* data;
+    int size;
+};
+
+const FactoryPreset factoryPresets[] =
+{
+    { "PAD_EasyStrings",     BinaryData::pad_easystrings_iflower,    BinaryData::pad_easystrings_iflowerSize },
+    { "PLUCK_EasyGrains",    BinaryData::pluck_easygrains_iflower,  BinaryData::pluck_easygrains_iflowerSize },
+    { "BASS_ALittleBitWide", BinaryData::bass_alittlebitwide_iflower, BinaryData::bass_alittlebitwide_iflowerSize },
+    { "KEY_SpaceBits",       BinaryData::key_spacebits_iflower,     BinaryData::key_spacebits_iflowerSize },
+    { "DRUM_Stereo",         BinaryData::drum_stereo_iflower,       BinaryData::drum_stereo_iflowerSize }
+};
+
+bool loadFactoryPresetOnStartup = true;
 
 juce::String formatPercent (float v)
 {
@@ -119,6 +138,11 @@ IridescentFlowerProcessor::IridescentFlowerProcessor()
     for (auto* parameter : getParameters())
         if (auto* ranged = dynamic_cast<juce::RangedAudioParameter*> (parameter))
             parameters.addParameterListener (ranged->getParameterID(), this);
+
+    // A fresh instance opens on the PAD factory patch; a host restoring a
+    // project will call setStateInformation afterwards and override this.
+    if (loadFactoryPresetOnStartup)
+        loadFactoryPreset (0);
 }
 
 IridescentFlowerProcessor::~IridescentFlowerProcessor()
@@ -650,6 +674,44 @@ juce::File IridescentFlowerProcessor::getPresetFolder()
     return juce::File::getSpecialLocation (juce::File::userDocumentsDirectory)
         .getChildFile ("Iridescent Flower")
         .getChildFile ("Presets");
+}
+
+juce::StringArray IridescentFlowerProcessor::getFactoryPresetNames()
+{
+    juce::StringArray names;
+
+    for (const auto& preset : factoryPresets)
+        names.add (preset.name);
+
+    return names;
+}
+
+int IridescentFlowerProcessor::getFactoryPresetCount()
+{
+    return static_cast<int> (sizeof (factoryPresets) / sizeof (factoryPresets[0]));
+}
+
+void IridescentFlowerProcessor::setLoadFactoryPresetOnStartup (bool shouldLoad)
+{
+    loadFactoryPresetOnStartup = shouldLoad;
+}
+
+bool IridescentFlowerProcessor::loadFactoryPreset (int index)
+{
+    if (index < 0 || index >= getFactoryPresetCount())
+        return false;
+
+    const auto& preset = factoryPresets[index];
+    setStateInformation (preset.data, preset.size);
+    return true;
+}
+
+bool IridescentFlowerProcessor::loadFactoryPreset (const juce::String& name)
+{
+    const auto names = getFactoryPresetNames();
+    const auto index = names.indexOf (name, true);
+
+    return index >= 0 && loadFactoryPreset (index);
 }
 
 bool IridescentFlowerProcessor::savePreset (const juce::File& file)
