@@ -38,7 +38,7 @@ juce_add_binary_data(IridescentAssets
         Assets/Fonts/PressStart2P.ttf)
 
 juce_add_plugin(IridescentFlower
-    COMPANY_NAME "Guillaume Audio"
+    COMPANY_NAME "LeGui Studio"
     IS_SYNTH FALSE
     NEEDS_MIDI_INPUT FALSE
     NEEDS_MIDI_OUTPUT FALSE
@@ -50,8 +50,8 @@ juce_add_plugin(IridescentFlower
     FORMATS VST3 Standalone
     VST3_CATEGORIES Fx Delay Reverb
     PRODUCT_NAME "Iridescent Flower"
-    DESCRIPTION "An eight-stage sidechain morph pad processor with visualized filter, granular clouds and dream reverb."
-    BUNDLE_ID "com.guillaumeaudio.iridescentflower"
+    DESCRIPTION "A multi-bus modular VST3 effect rack with independent per-slot parameters, morphing and custom DLL modules."
+    BUNDLE_ID "com.leguistudio.iridescentflower"
     VERSION "1.1.0")
 
 target_sources(IridescentFlower
