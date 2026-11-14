@@ -77,7 +77,7 @@ def build_cover() -> Image.Image:
     room = Image.open(OLD).convert("RGB").resize((1700, 1700), Image.Resampling.LANCZOS)
     room = room.crop((300, 250, 2000, 1470)).resize((W, H), Image.Resampling.LANCZOS)
     room = room.filter(ImageFilter.GaussianBlur(42))
-    room = ImageEnhance.Brightness(room).enhance(0.44)
+    room = ImageEnhance.Brightness(room).enhance(0.30)
     room = ImageEnhance.Color(room).enhance(1.7)
     canvas.paste(room, (0, 0))
 
@@ -96,7 +96,7 @@ def build_cover() -> Image.Image:
     draw.arc((1080, 82, 1858, 860), 200, 330, fill=(66, 232, 255, 170), width=6)
 
     # Two portraits, same axis: old painted face and new line drawing.
-    old = Image.open(OLD).convert("RGB").resize((1020, 1020), Image.Resampling.LANCZOS)
+    old = Image.open(OLD).convert("RGB").resize((800, 800), Image.Resampling.LANCZOS)
     old = ImageEnhance.Contrast(old).enhance(1.25)
     old = ImageEnhance.Color(old).enhance(1.35)
     old = old.filter(ImageFilter.UnsharpMask(radius=2, percent=140, threshold=2))
@@ -112,8 +112,13 @@ def build_cover() -> Image.Image:
     face_x, face_y = 760, 52
     canvas_rgba = canvas.convert("RGBA")
     old_layer = old.convert("RGBA")
-    old_layer.putalpha(238)
-    canvas_rgba.alpha_composite(old_layer, (face_x, face_y))
+    old_layer.putalpha(112)
+    old_mask = Image.new("L", (800, 800), 0)
+    md = ImageDraw.Draw(old_mask)
+    md.rectangle((34, 34, 766, 766), fill=255)
+    old_mask = old_mask.filter(ImageFilter.GaussianBlur(28))
+    old_layer.putalpha(ImageChops.multiply(old_layer.getchannel("A"), old_mask))
+    canvas_rgba.alpha_composite(old_layer, (face_x + 110, face_y + 106))
 
     # A screened pixel ghost, then the new sketch lines.
     ghost = Image.new("RGB", (W, H), (0, 0, 0))
@@ -137,14 +142,14 @@ def build_cover() -> Image.Image:
         Image.new("RGBA", new.size, (0, 0, 0, 0)),
         magenta.getchannel("A"),
     )
-    canvas_rgba.alpha_composite(cyan, (face_x - 7, face_y + 3))
-    canvas_rgba.alpha_composite(magenta, (face_x + 8, face_y - 2))
+    canvas_rgba.alpha_composite(cyan, (face_x - 4, face_y + 2))
+    canvas_rgba.alpha_composite(magenta, (face_x + 5, face_y - 1))
     new_alpha = new.copy()
     new_alpha.putalpha(new.getchannel("A").point(lambda v: int(v * 0.88)))
     canvas_rgba.alpha_composite(new_alpha, (face_x, face_y))
 
     # Glitch slices only around the face, then a global xerox texture.
-    canvas_rgba = glitch(canvas_rgba, 16, 700, 1840)
+    canvas_rgba = glitch(canvas_rgba, 4, 700, 1840)
 
     # Left-side typography.
     draw = ImageDraw.Draw(canvas_rgba, "RGBA")
@@ -167,9 +172,9 @@ def build_cover() -> Image.Image:
 
     # Print texture.
     canvas_rgba = canvas_rgba.convert("RGB")
-    canvas_rgba = screen(canvas_rgba, Image.open(PIXEL_C).convert("RGB").resize((W, H), Image.Resampling.NEAREST), 0.18)
-    canvas_rgba = add_halftone(canvas_rgba.convert("RGBA"), 20)
-    canvas_rgba = add_scanlines(canvas_rgba, 30, 4)
+    canvas_rgba = screen(canvas_rgba, Image.open(PIXEL_C).convert("RGB").resize((W, H), Image.Resampling.NEAREST), 0.10)
+    canvas_rgba = add_halftone(canvas_rgba.convert("RGBA"), 13)
+    canvas_rgba = add_scanlines(canvas_rgba, 14, 4)
     canvas_rgba = canvas_rgba.convert("RGB")
 
     arr = np.asarray(canvas_rgba).astype(np.float32)
