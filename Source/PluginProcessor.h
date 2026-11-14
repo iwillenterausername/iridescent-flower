@@ -63,6 +63,13 @@ public:
     bool loadPreset (const juce::File& file);
     static juce::File getPresetFolder();
 
+    // Factory presets are embedded in the binary. Index 0 is the startup patch.
+    static juce::StringArray getFactoryPresetNames();
+    static int getFactoryPresetCount();
+    static void setLoadFactoryPresetOnStartup (bool shouldLoad);
+    bool loadFactoryPreset (int index);
+    bool loadFactoryPreset (const juce::String& name);
+
     juce::AudioProcessorValueTreeState parameters;
 
 private:
