@@ -1,0 +1,83 @@
+Iridescent Flower 1.1.0 — Windows x64 VST3
+==========================================
+
+压缩包内容
+----------
+
+  Iridescent Flower.vst3/          插件本体（这是一个文件夹，不是单个文件）
+  Custom Modules/BbdDelay.dll     示例自定义模块
+  Custom Modules/README.md        自定义模块 ABI 说明
+  Install-IridescentFlower.ps1    安装脚本
+  INSTALL.txt                     本说明
+
+重要
+----
+
+.vst3 是一个文件夹。不要只复制里面的
+"Contents\x86_64-win\Iridescent Flower.vst3" 文件；
+应复制整个 "Iridescent Flower.vst3" 文件夹。
+
+
+安装方式 A：系统 VST3 目录（推荐）
+----------------------------------
+
+默认目录：
+
+  C:\Program Files\Common Files\VST3
+
+1. 把压缩包完整解压。
+2. 以管理员身份打开 PowerShell。
+3. 进入解压目录，执行：
+
+   powershell -ExecutionPolicy Bypass -File .\Install-IridescentFlower.ps1
+
+4. 重新扫描宿主插件目录，加载：
+   Guillaume Audio → Iridescent Flower
+
+脚本会把 BbdDelay.dll 复制到：
+
+  Documents\Iridescent Flower\Custom Modules
+
+
+安装方式 B：手动复制
+--------------------
+
+1. 把整个 "Iridescent Flower.vst3" 文件夹复制到：
+   C:\Program Files\Common Files\VST3
+2. 可选：把 Custom Modules 里的 BbdDelay.dll 复制到：
+   Documents\Iridescent Flower\Custom Modules
+3. 在宿主中 Rescan / Refresh。
+
+
+安装方式 C：自定义 VST3 目录
+----------------------------
+
+如果宿主使用独立目录，例如 D:\VST：
+
+1. 把整个 "Iridescent Flower.vst3" 文件夹复制到 D:\VST。
+2. 在宿主插件设置中把 D:\VST 加入扫描路径。
+3. Rescan。
+
+
+在宿主中使用
+------------
+
+1. 新建一个音频轨道。
+2. 在 VST3 效果器列表中找到：
+   Guillaume Audio → Iridescent Flower
+3. 加载后，左侧是 Bus 1/2/3 + Master + Morph 页面。
+4. 右键空槽 → LOAD FX 装载模块。
+5. 右侧头像区域可点击，加载自定义头像。
+
+
+卸载
+----
+
+删除以下内容即可：
+
+  C:\Program Files\Common Files\VST3\Iridescent Flower.vst3
+  Documents\Iridescent Flower\
+  Documents\Iridescent Flower\Custom Modules\
+
+如果使用自定义目录，删除对应目录中的
+"Iridescent Flower.vst3" 文件夹。
