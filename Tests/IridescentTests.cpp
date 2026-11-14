@@ -340,6 +340,20 @@ void testSlotEditingAndPresets()
     check (p.getSlot (3, 1).type == ModuleId::Cloud, "master has its own slot chain");
 }
 
+void testFactoryPresets()
+{
+    const auto names = IridescentFlowerProcessor::getFactoryPresetNames();
+    check (names.size() == 5, "five factory presets are embedded");
+    check (names[0] == "PAD_EasyStrings", "PAD is the first factory preset");
+
+    IridescentFlowerProcessor::setLoadFactoryPresetOnStartup (true);
+    IridescentFlowerProcessor p;
+    check (p.getSlot (0, 0).type != ModuleId::Morph, "new instance starts on PAD patch");
+    check (p.loadFactoryPreset ("PLUCK_EasyGrains"), "factory preset can be loaded by name");
+    check (p.loadFactoryPreset (4), "factory preset can be loaded by index");
+    IridescentFlowerProcessor::setLoadFactoryPresetOnStartup (false);
+}
+
 void testRates()
 {
     IridescentFlowerProcessor p;
@@ -636,6 +650,7 @@ void testCustomModule()
 int main (int argc, char* argv[])
 {
     juce::ScopedJuceInitialiser_GUI gui;
+    IridescentFlowerProcessor::setLoadFactoryPresetOnStartup (false);
 
     juce::File vst3, snapshot, demo;
     int snapshotSlot = 0;
@@ -668,6 +683,7 @@ int main (int argc, char* argv[])
         return failures == 0 ? 0 : 1;
     }
 
+    testFactoryPresets();
     testDefaultChain();
     testMorphBuses();
     testFilter();
