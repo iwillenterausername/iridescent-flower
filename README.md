@@ -201,15 +201,38 @@ TIME / FEEDBACK / MIX / TONE / DRIVE / AGE / MOD DEPTH / WIDTH
 
 ## 安装
 
-### 使用 GitHub Releases 安装包
+### 推荐：Windows 安装程序
 
-预编译包发布在：
+预编译安装程序发布在：
 
 ```
 https://github.com/iwillenterausername/iridescent-flower/releases/latest
 ```
 
 下载：
+
+```
+IridescentFlower-1.1.0-Setup.exe
+```
+
+安装步骤：
+
+1. 双击 `IridescentFlower-1.1.0-Setup.exe`。
+2. 在 Windows UAC 提示中选择“是”。
+3. 确认 VST3 安装目录（默认 `C:\Program Files\Common Files\VST3`）。
+4. 勾选是否安装示例 BBD Delay 自定义模块。
+5. 点击 `Install`。
+6. 在宿主中重新扫描 VST3 插件，然后加载 `Guillaume Audio → Iridescent Flower`。
+
+安装程序包含图形界面、目标目录选择、可选自定义模块和 Windows“应用和功能”卸载入口，不需要使用命令行。
+
+> 安装程序未进行代码签名，Windows SmartScreen 可能显示未知发布者提示；选择“更多信息 → 仍要运行”即可。
+>
+> GitHub Releases 继承仓库可见性。仓库为 Private 时，只有仓库协作者可以下载；公开发布前需将仓库设为 Public，或将下载者加入协作者。
+
+### 便携 ZIP / 高级安装
+
+如需免安装版本或手动部署：
 
 ```
 Iridescent-Flower-1.1.0-VST3-win64.zip
@@ -226,10 +249,8 @@ INSTALL.txt                     安装说明
 ```
 
 > `.vst3` 是文件夹，不是单个文件。必须完整复制整个 `Iridescent Flower.vst3` 文件夹，不能只复制其中的二进制文件。
->
-> GitHub Releases 继承仓库可见性。仓库为 Private 时，只有仓库协作者可以下载；公开发布前需将仓库设为 Public，或将下载者加入协作者。
 
-#### 自动安装
+#### 使用 ZIP 内脚本（可选）
 
 1. 将 ZIP 完整解压到任意目录。
 2. 以管理员身份打开 PowerShell，进入解压目录。
