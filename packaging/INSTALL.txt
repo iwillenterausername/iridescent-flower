@@ -32,7 +32,7 @@ Iridescent Flower 1.1.0 — Windows x64 VST3
    powershell -ExecutionPolicy Bypass -File .\Install-IridescentFlower.ps1
 
 4. 重新扫描宿主插件目录，加载：
-   Guillaume Audio → Iridescent Flower
+   LeGui Studio → Iridescent Flower
 
 脚本会把 BbdDelay.dll 复制到：
 
@@ -64,7 +64,7 @@ Iridescent Flower 1.1.0 — Windows x64 VST3
 
 1. 新建一个音频轨道。
 2. 在 VST3 效果器列表中找到：
-   Guillaume Audio → Iridescent Flower
+   LeGui Studio → Iridescent Flower
 3. 加载后，左侧是 Bus 1/2/3 + Master + Morph 页面。
 4. 右键空槽 → LOAD FX 装载模块。
 5. 右侧头像区域可点击，加载自定义头像。
