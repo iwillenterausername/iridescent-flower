@@ -35,6 +35,7 @@ namespace IridescentFlowerSetup
         private readonly Button browseButton;
         private readonly Label statusLabel;
         private readonly ProgressBar progressBar;
+        private bool installed;
 
         public SetupForm()
         {
@@ -183,6 +184,12 @@ namespace IridescentFlowerSetup
 
         private void Install()
         {
+            if (installed)
+            {
+                Close();
+                return;
+            }
+
             var destination = destinationBox.Text.Trim();
 
             if (destination.Length == 0)
@@ -250,7 +257,7 @@ namespace IridescentFlowerSetup
                 statusLabel.Text = "Installed successfully.";
                 installButton.Text = "Close";
                 installButton.Enabled = true;
-                installButton.Click += (s, e) => Close();
+                installed = true;
 
                 MessageBox.Show(this,
                     "Iridescent Flower 1.1.0 has been installed.\r\n\r\n" +
