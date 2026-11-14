@@ -133,17 +133,52 @@ IridescentFlowerEditor::IridescentFlowerEditor (IridescentFlowerProcessor& p)
     presetButton.onClick = [this]
     {
         juce::PopupMenu menu;
+        const auto factoryNames = IridescentFlowerProcessor::getFactoryPresetNames();
+
+        if (! factoryNames.isEmpty())
+        {
+            juce::PopupMenu factoryMenu;
+
+            for (int i = 0; i < factoryNames.size(); ++i)
+                factoryMenu.addItem (100 + i, factoryNames[i]);
+
+            menu.addSubMenu ("FACTORY PRESETS", factoryMenu);
+        }
+
         menu.addItem (1, "SAVE PRESET");
         menu.addItem (2, "LOAD PRESET");
         menu.addItem (3, "OPEN PRESET FOLDER");
         menu.addItem (4, "OPEN CUSTOM MODULES FOLDER");
         menu.showMenuAsync (juce::PopupMenu::Options().withTargetComponent (presetButton),
-                            [this] (int result)
+                            [this, factoryNames] (int result)
                             {
-                                if (result == 1) savePreset();
-                                else if (result == 2) loadPreset();
-                                else if (result == 3) openPresetFolder();
-                                else if (result == 4) iridescent::CustomModuleRegistry::get().revealFolder();
+                                if (result == 1)
+                                {
+                                    savePreset();
+                                }
+                                else if (result == 2)
+                                {
+                                    loadPreset();
+                                }
+                                else if (result == 3)
+                                {
+                                    openPresetFolder();
+                                }
+                                else if (result == 4)
+                                {
+                                    iridescent::CustomModuleRegistry::get().revealFolder();
+                                }
+                                else if (result >= 100)
+                                {
+                                    const auto index = result - 100;
+
+                                    if (processorRef.loadFactoryPreset (index))
+                                    {
+                                        presetMessage = factoryNames[index].toUpperCase();
+                                        refreshControls();
+                                        repaint();
+                                    }
+                                }
                             });
     };
 
