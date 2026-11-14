@@ -12,7 +12,9 @@ Bundle：com.leguistudio.iridescentflower
 
 二进制 SHA-256
 ---------------
-9DF3030FB5008BCDAB5E306FDD02796831EE273EEC010F26CA445B4D15D5D098
+9881674C9FB78BE5E007F20B46E8C04EA1ED6E01FB240126870E98BEF474D265
+
+签名：LeGui Studio 自签名证书（SHA-256 时间戳）
 
 参数 / 总线
 -----------
@@ -21,18 +23,25 @@ Bundle：com.leguistudio.iridescentflower
 1 个输出总线（Stereo）
 3 × 8 个 Bus 槽 + 8 个 Master 槽 + 固定 Morph
 
-[PASS] 默认链路
+[PASS] 工厂预设
+       5 个预设嵌入二进制：PAD_EasyStrings、PLUCK_EasyGrains、
+       BASS_ALittleBitWide、KEY_SpaceBits、DRUM_Stereo
+       新实例默认加载 PAD_EasyStrings
+       按名称和索引加载均通过
+       PRESET -> FACTORY PRESETS 菜单可切换
+
+[PASS] 初始化引擎基线（测试关闭工厂启动）
        输入 RMS 0.106066
        输出 RMS 0.107295（约 +0.2 dB）
-       默认 COMP makeup +12 dB，OUTPUT +4 dB
-       默认 LFO Morph Depth = 0，不会自动晃动
+       COMP makeup +12 dB，OUTPUT +4 dB
+       LFO Morph Depth = 0，不会自动晃动
 
 [PASS] 三条 Bus
        Bus 1 / Bus 2 进入最终 Morph
        Bus 3 作为并行链由 BUS 3 旋钮混合
-       每条 Bus 独立 8 个槽，Bus 1 默认 8 个效果
-       Bus 2 / Bus 3 默认 8 个空槽
-       默认 BUS 1 OUT 100%，BUS 2 OUT 0%，BUS 3 OUT 0%
+       每条 Bus 独立 8 个槽
+       测试基线为无模块空链；PAD 预设会装载自己的模块组合
+       BUS 1 OUT 100%，BUS 2 OUT 0%，BUS 3 OUT 0%
        BUS 2 OUT 是直接并行发送；Morph B 取自 Bus 2 链，0% 时仍可被 Morph 融合
        槽位可在当前 Bus 内拖动换序
 
