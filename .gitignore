@@ -1,0 +1,23 @@
+# Build products
+build/
+out/
+dist/
+.vs/
+*.user
+*.suo
+*.VC.db
+CMakeUserPresets.json
+
+# Local promo work-in-progress (not part of the plugin repository)
+docs/promo/
+
+# Local installs / generated audio
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Keep docs, assets, presets and source
+!docs/
+!Assets/
+!CustomModules/
