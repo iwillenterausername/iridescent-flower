@@ -10,8 +10,6 @@ Iridescent Flower 是一款 Windows x64 VST3 多总线模块化效果器，可�
 
 ![Iridescent Flower video cover](docs/art/iridescent-flower-cover-1920.jpg)
 
-[功能概览视频文案](docs/video-script.md)
-
 ## 概述
 
 Iridescent Flower 将效果器机架、并行 Bus 路由、总线处理与 Morph 交叉融合整合在同一个插件中。
