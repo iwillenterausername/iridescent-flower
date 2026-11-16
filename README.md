@@ -403,9 +403,11 @@ docs/                 截图与测试报告
 - 插件格式：VST3
 - 平台：Windows x64
 - 参数数量：147
-- 输入总线：Main + Sidechain
+- 输入总线：Main + Sidechain（Sidechain 可选，支持 mono/stereo 布局）
 - 输出总线：Stereo
 - 宿主：支持 VST3 的 Windows DAW
+- 支持可变 process block size；随机块大小（如 FL Studio）不会触发音频线程内的 sidechain 分配
+- 只处理 Main 输入总线，Sidechain 通道不会被当作右声道或残留到输出
 
 ## 已知限制
 
