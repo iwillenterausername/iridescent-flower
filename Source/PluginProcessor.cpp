@@ -372,6 +372,9 @@ juce::AudioProcessorEditor* IridescentFlowerProcessor::createEditor()
 
 void IridescentFlowerProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    // FL Studio can change the block size every process call. Keep scratch
+    // storage allocated here so the audio thread does not allocate.
+    sidechainBuffer.setSize (2, juce::jmax (1, samplesPerBlock), false, true, true);
     engine.prepare (sampleRate, samplesPerBlock);
 }
 
@@ -389,15 +392,17 @@ bool IridescentFlowerProcessor::isBusesLayoutSupported (const BusesLayout& layou
                            && main != juce::AudioChannelSet::stereo()))
         return false;
 
-    return layouts.getChannelSet (true, 1).isDisabled()
-        || layouts.getChannelSet (true, 1) == juce::AudioChannelSet::stereo();
+    const auto sidechain = layouts.getChannelSet (true, 1);
+    return sidechain.isDisabled()
+        || sidechain == juce::AudioChannelSet::stereo()
+        || sidechain == juce::AudioChannelSet::mono();
 }
 
 void IridescentFlowerProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
     juce::ScopedNoDenormals noDenormals;
 
-    juce::AudioBuffer<float> sidechain;
+    const auto numSamples = buffer.getNumSamples();
     bool sidechainBusActive = false;
 
     if (auto* bus = getBus (true, 1); bus != nullptr
@@ -406,9 +411,23 @@ void IridescentFlowerProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         && buffer.getNumChannels() >= getTotalNumInputChannels())
     {
         const auto scBuffer = getBusBuffer (buffer, true, 1);
-        sidechainBusActive = scBuffer.getNumSamples() > 0;
-        if (sidechainBusActive)
-            sidechain.makeCopyOf (scBuffer, true);
+        const auto scChannels = scBuffer.getNumChannels();
+        const auto scSamples = scBuffer.getNumSamples();
+
+        if (scChannels > 0 && scSamples > 0 && scSamples <= sidechainBuffer.getNumSamples())
+        {
+            sidechainBuffer.clear (0, scSamples);
+
+            for (int ch = 0; ch < juce::jmin (2, scChannels); ++ch)
+                sidechainBuffer.copyFrom (ch, 0, scBuffer, ch, 0, scSamples);
+
+            // A mono host sidechain feeds both sides; MorphModule reads
+            // the second channel as a duplicate rather than uninitialised data.
+            if (scChannels == 1)
+                sidechainBuffer.copyFrom (1, 0, scBuffer, 0, 0, scSamples);
+
+            sidechainBusActive = true;
+        }
     }
 
     double bpm = engine.getTempo();
@@ -418,16 +437,30 @@ void IridescentFlowerProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     {
         if (const auto position = hostPlayHead->getPosition())
         {
-            if (const auto hostBpm = position->getBpm())
+            if (const auto hostBpm = position->getBpm(); hostBpm && std::isfinite (*hostBpm))
                 bpm = juce::jlimit (20.0, 300.0, *hostBpm);
 
             isPlaying = position->getIsPlaying();
         }
     }
 
-    engine.setTempo (bpm);
-    engine.setPlaying (isPlaying);
-    engine.process (buffer, sidechainBusActive ? &sidechain : nullptr, sidechainBusActive);
+    // Process only the main input bus. The host buffer can also contain the
+    // optional sidechain channels; treating those as the main right channel
+    // would create crosstalk or noise on mono tracks.
+    auto mainBuffer = getBusBuffer (buffer, true, 0);
+
+    if (mainBuffer.getNumSamples() > 0 && mainBuffer.getNumChannels() > 0)
+    {
+        engine.setTempo (bpm);
+        engine.setPlaying (isPlaying);
+        engine.process (mainBuffer, sidechainBusActive ? &sidechainBuffer : nullptr, sidechainBusActive);
+    }
+
+    // VST3 hosts may hand us a buffer containing input-sidechain channels in
+    // addition to the main output. Never leave those extra channels with
+    // stale input data when the host reads the whole buffer.
+    for (int ch = getTotalNumOutputChannels(); ch < buffer.getNumChannels(); ++ch)
+        buffer.clear (ch, 0, numSamples);
 }
 
 iridescent::RackEngine::Slot IridescentFlowerProcessor::getSlot (int index) const
