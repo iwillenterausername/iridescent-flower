@@ -80,6 +80,7 @@ private:
     void parameterChanged (const juce::String& parameterID, float newValue) override;
 
     iridescent::RackEngine engine;
+    juce::AudioBuffer<float> sidechainBuffer;
     int activeBus = 0;
     int activeSlot = 0;
     bool syncingParameters = false;
