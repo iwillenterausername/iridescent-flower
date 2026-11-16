@@ -354,6 +354,122 @@ void testFactoryPresets()
     IridescentFlowerProcessor::setLoadFactoryPresetOnStartup (false);
 }
 
+void processRandomBlocks (IridescentFlowerProcessor& p, juce::AudioBuffer<float>& buffer)
+{
+    juce::Random random (0x51a7c0de);
+
+    for (int offset = 0; offset < buffer.getNumSamples();)
+    {
+        const auto remaining = buffer.getNumSamples() - offset;
+        const auto count = juce::jmin (remaining, random.nextInt (blockSize) + 1);
+        juce::AudioBuffer<float> block (buffer.getNumChannels(), count);
+
+        for (int ch = 0; ch < buffer.getNumChannels(); ++ch)
+            block.copyFrom (ch, 0, buffer, ch, offset, count);
+
+        juce::MidiBuffer midi;
+        p.processBlock (block, midi);
+
+        for (int ch = 0; ch < buffer.getNumChannels(); ++ch)
+            buffer.copyFrom (ch, offset, block, ch, 0, count);
+
+        offset += count;
+    }
+}
+
+void testFactorySilence()
+{
+    IridescentFlowerProcessor::setLoadFactoryPresetOnStartup (true);
+    IridescentFlowerProcessor p;
+
+    for (int i = 0; i < IridescentFlowerProcessor::getFactoryPresetCount(); ++i)
+    {
+        p.loadFactoryPreset (i);
+        p.setPlayConfigDetails (2, 2, testSampleRate, blockSize);
+        p.prepareToPlay (testSampleRate, blockSize);
+
+        juce::AudioBuffer<float> silence (2, static_cast<int> (testSampleRate * 4.0));
+        silence.clear();
+        processInBlocks (p, silence);
+
+        const auto peak = peakAbs (silence);
+        std::cout << "  factory silence [" << i << "] peak=" << peak << std::endl;
+        check (allFinite (silence), "factory preset silence stays finite");
+        check (peak < 0.02f, "factory preset does not self-oscillate on silence");
+    }
+
+    IridescentFlowerProcessor::setLoadFactoryPresetOnStartup (false);
+}
+
+void testSidechainBufferLayout()
+{
+    IridescentFlowerProcessor p;
+    juce::AudioProcessor::BusesLayout layout;
+    layout.inputBuses.add (juce::AudioChannelSet::stereo());
+    layout.inputBuses.add (juce::AudioChannelSet::stereo());
+    layout.outputBuses.add (juce::AudioChannelSet::stereo());
+    check (p.setBusesLayout (layout), "stereo sidechain layout is accepted");
+
+    p.setPlayConfigDetails (4, 2, testSampleRate, blockSize);
+    p.prepareToPlay (testSampleRate, blockSize);
+    p.setActiveSlot (0, 0, false);
+    setFloat (p, ids::morphSource, 0.0f); // SIDECHAIN
+    setFloat (p, ids::morphAmount, 0.5f);
+
+    juce::AudioBuffer<float> buffer (4, blockSize);
+    buffer.clear();
+    makeSine (buffer, 220.0, 0.1f);
+
+    juce::MidiBuffer midi;
+    p.processBlock (buffer, midi);
+
+    check (allFinite (buffer), "four-channel sidechain buffer stays finite");
+    check (buffer.getSample (2, 0) == 0.0f && buffer.getSample (3, 0) == 0.0f,
+           "sidechain input channels are not left as output");
+
+    IridescentFlowerProcessor monoP;
+    juce::AudioProcessor::BusesLayout monoLayout;
+    monoLayout.inputBuses.add (juce::AudioChannelSet::mono());
+    monoLayout.inputBuses.add (juce::AudioChannelSet::stereo());
+    monoLayout.outputBuses.add (juce::AudioChannelSet::mono());
+    check (monoP.setBusesLayout (monoLayout), "mono main + stereo sidechain layout is accepted");
+
+    monoP.setPlayConfigDetails (3, 1, testSampleRate, blockSize);
+    monoP.prepareToPlay (testSampleRate, blockSize);
+    juce::AudioBuffer<float> monoBuffer (3, blockSize);
+    monoBuffer.clear();
+
+    for (int i = 0; i < blockSize; ++i)
+        monoBuffer.setSample (0, i, 0.1f * std::sin (
+            juce::MathConstants<double>::twoPi * 220.0 * i / testSampleRate));
+
+    juce::MidiBuffer monoMidi;
+    monoP.processBlock (monoBuffer, monoMidi);
+    check (allFinite (monoBuffer), "mono main with sidechain stays finite");
+    check (monoBuffer.getSample (1, 0) == 0.0f && monoBuffer.getSample (2, 0) == 0.0f,
+           "mono main does not read sidechain as its right channel");
+}
+
+void testFactoryRandomBlocks()
+{
+    IridescentFlowerProcessor::setLoadFactoryPresetOnStartup (true);
+    IridescentFlowerProcessor p;
+
+    for (int i = 0; i < IridescentFlowerProcessor::getFactoryPresetCount(); ++i)
+    {
+        p.loadFactoryPreset (i);
+        p.setPlayConfigDetails (2, 2, testSampleRate, blockSize);
+        p.prepareToPlay (testSampleRate, blockSize);
+
+        juce::AudioBuffer<float> buffer (2, static_cast<int> (testSampleRate * 2.0));
+        makeSine (buffer, 220.0, 0.1f);
+        processRandomBlocks (p, buffer);
+        check (allFinite (buffer), "random host block sizes stay finite");
+    }
+
+    IridescentFlowerProcessor::setLoadFactoryPresetOnStartup (false);
+}
+
 void testRates()
 {
     IridescentFlowerProcessor p;
@@ -684,6 +800,9 @@ int main (int argc, char* argv[])
     }
 
     testFactoryPresets();
+    testFactorySilence();
+    testFactoryRandomBlocks();
+    testSidechainBufferLayout();
     testDefaultChain();
     testMorphBuses();
     testFilter();
